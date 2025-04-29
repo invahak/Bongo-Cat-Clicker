@@ -15,12 +15,27 @@ Auto clicker with object detection support.
 
 ---
 
-## 🚀 Установка | Installation
+🚀 Установка | Installation
+Скачайте репозиторий или ZIP-архив
+Download this repository or ZIP archive.
 
-1. Скачайте репозиторий или архив ZIP  
-   Download this repository or ZIP archive.
-2. Установите зависимости | Install requirements:
-
+Установите зависимости | Install requirements:
 ```bash
 pip install -r requirements.txt
+```
+
+Запуск через Python | Run via Python:
+```bash
 python BongoCatClicker.py
+```
+
+📦 Сборка .exe | Build as .exe:
+Откройте CMD в папке с проектом. Убедитесь, что chest.png лежит рядом.
+Open CMD in the project folder. Make sure chest.png is nearby.
+
+```bash
+pyinstaller --noconfirm --onefile --windowed --add-data "chest.png;." BongoCatClicker.py
+```
+
+Сборка появится в папке dist/
+The built file will appear in the dist/ folder.
