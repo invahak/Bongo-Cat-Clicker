@@ -1,0 +1,8 @@
+customtkinter
+Pillow
+pyautogui
+opencv-python
+numpy
+keyboard
+mss
+screeninfo
