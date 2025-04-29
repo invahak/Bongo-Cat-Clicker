@@ -23,3 +23,4 @@ Auto clicker with object detection support.
 
 ```bash
 pip install -r requirements.txt
+python BongoCatClicker.py
