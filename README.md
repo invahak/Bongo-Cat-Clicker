@@ -5,6 +5,14 @@ Auto clicker with object detection support.
 
 ---
 
+## 🖼 Интерфейс | Interface
+
+| 🇷🇺 Русская версия | 🇬🇧 English version |
+|:-----------------:|:------------------:|
+| ![Russian UI](img/ru_img.png) | ![English UI](img/en_img.png) |
+
+---
+
 ## ✨ Особенности | Features
 
 - 🔥 Режим "Клик + Поиск сундука" | "Click + Chest Search" mode
@@ -39,3 +47,4 @@ pyinstaller --noconfirm --onefile --windowed --add-data "chest.png;." BongoCatCl
 
 Сборка появится в папке dist/
 The built file will appear in the dist/ folder.
+
