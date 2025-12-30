@@ -1,4 +1,4 @@
-# Bongo Cat Clicker by Invahak 🐾
+# Bongo Cat Clicker v2 by Invahak 🐾
 
 Автокликер с функцией поиска объектов на экране.  
 Auto clicker with object detection support.
@@ -11,6 +11,8 @@ Auto clicker with object detection support.
 |:-----------------:|:------------------:|
 | ![Russian UI](img/ru_img.png) | ![English UI](img/en_img.png) |
 
+---
+‼️Масштаб интерфейса ставьте 2x | Set the interface scale to 2x‼️
 ---
 
 ## ✨ Особенности | Features
@@ -38,8 +40,8 @@ python BongoCatClicker.py
 ```
 
 📦 Сборка .exe | Build as .exe:
-Откройте CMD в папке с проектом. Убедитесь, что chest.png лежит рядом.
-Open CMD in the project folder. Make sure chest.png is nearby.
+Откройте CMD в папке с проектом. Убедитесь, что chest1.png и chest2.png лежат рядом.
+Open CMD in the project folder. Make sure chest1.png end chest2.png is nearby.
 
 ```bash
 pyinstaller --noconfirm --onefile --windowed --add-data "chest.png;." BongoCatClicker.py
