@@ -1,5 +1,11 @@
 # Bongo Cat Clicker v2 by Invahak 🐾
 
+---
+
+Мое лобби CfdKamk1a3  |  My lobby CfdKamk1a3
+
+---
+
 Автокликер с функцией поиска объектов на экране.  
 Auto clicker with object detection support.
 
