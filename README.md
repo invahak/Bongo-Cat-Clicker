@@ -50,7 +50,7 @@ python BongoCatClicker.py
 Open CMD in the project folder. Make sure chest1.png end chest2.png is nearby.
 
 ```bash
-pyinstaller --noconfirm --onefile --windowed --add-data "chest.png;." BongoCatClicker.py
+pyinstaller --noconfirm --onefile --windowed --add-data "chest1.png;." --add-data "chest2.png;." BongoCatClicker.py
 ```
 
 Сборка появится в папке dist/
