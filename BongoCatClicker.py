@@ -29,7 +29,7 @@ def resource_path(relative_path):
 
 
 APP_CONFIG = {
-    "TITLE": "Bongo Cat Clicker by invahak",
+    "TITLE": "Bongo Cat Clicker v.2 by invahak",
     "WINDOW_SIZE": "470x415",
     "THEME": "dark",
     "FONT": ("Inter", 16, "bold"),
@@ -196,20 +196,21 @@ class ClickerEngine:
         self.color_range = color_range
         self.running_event = threading.Event()
 
-        # --- Загрузка шаблона сундука ---
-        self.chest_template = cv2.imread(resource_path('chest.png'), cv2.IMREAD_UNCHANGED)
-        if self.chest_template is None:
-            raise RuntimeError("Не найден файл сундука chest.png! Убедись, что он лежит рядом со скриптом.")
-        # Приводим к BGR
-        if len(self.chest_template.shape) == 3:
-            if self.chest_template.shape[2] == 4:
-                self.chest_template = cv2.cvtColor(self.chest_template, cv2.COLOR_BGRA2BGR)
-            elif self.chest_template.shape[2] == 1:
-                self.chest_template = cv2.cvtColor(self.chest_template, cv2.COLOR_GRAY2BGR)
-        elif len(self.chest_template.shape) == 2:
-            self.chest_template = cv2.cvtColor(self.chest_template, cv2.COLOR_GRAY2BGR)
-        self.chest_w = self.chest_template.shape[1]
-        self.chest_h = self.chest_template.shape[0]
+        self.chest_templates = []
+        for fname in ('chest1.png', 'chest2.png'):
+            tpl = cv2.imread(resource_path(fname), cv2.IMREAD_UNCHANGED)
+            if tpl is None:
+                raise RuntimeError(f"Не найден файл шаблона {fname}! Поместите {fname} рядом со скриптом.")
+            # приведение к BGR (как было в исходном коде)
+            if len(tpl.shape) == 3:
+                if tpl.shape[2] == 4:
+                    tpl = cv2.cvtColor(tpl, cv2.COLOR_BGRA2BGR)
+                elif tpl.shape[2] == 1:
+                    tpl = cv2.cvtColor(tpl, cv2.COLOR_GRAY2BGR)
+            elif len(tpl.shape) == 2:
+                tpl = cv2.cvtColor(tpl, cv2.COLOR_GRAY2BGR)
+            # сохраняем кортеж (шаблон, ширина, высота)
+            self.chest_templates.append((tpl, tpl.shape[1], tpl.shape[0]))
 
     def start(self):
         if self.running_event.is_set():
@@ -273,31 +274,33 @@ class ClickerEngine:
             width = x2 - x1
             height = y2 - y1
 
-            # --- Захват области через MSS ---
             with mss.mss() as sct:
                 monitor = {"left": x1, "top": y1, "width": width, "height": height}
                 sct_img = sct.grab(monitor)
                 screenshot_cv = np.array(sct_img)[..., :3]  # BGR
 
-            # --- Грейскейл для универсального поиска ---
             screenshot_gray = cv2.cvtColor(screenshot_cv, cv2.COLOR_BGR2GRAY)
-            template_gray = cv2.cvtColor(self.chest_template, cv2.COLOR_BGR2GRAY)
 
-            res = cv2.matchTemplate(screenshot_gray, template_gray, cv2.TM_CCOEFF_NORMED)
-            min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+            # пройти по шаблонам в порядке приоритета (chest1 -> chest2)
+            for tpl, tpl_w, tpl_h in self.chest_templates:
+                tpl_gray = cv2.cvtColor(tpl, cv2.COLOR_BGR2GRAY)
+                res = cv2.matchTemplate(screenshot_gray, tpl_gray, cv2.TM_CCOEFF_NORMED)
+                _, max_val, _, max_loc = cv2.minMaxLoc(res)
 
-            if max_val >= 0.7:
-                center_x = x1 + max_loc[0] + self.chest_w // 2
-                center_y = y1 + max_loc[1] + self.chest_h // 2
-                self.logger.log(f"🟫 Найден сундук (grayscale) с совпадением {max_val:.2f} по центру ({center_x},{center_y})!")
-                pyautogui.moveTo(center_x, center_y)
-                for n in range(3):
-                    send_click_human()
-                    self.logger.log(self.strings["log_click_n"].format(n=n + 1))
-                    time.sleep(1)
-                return True
-            else:
-                self.logger.log(self.strings["log_grayscale_not_found"].format(score=max_val))
+                if max_val >= 0.7:  # порог совпадения можно настроить
+                    center_x = x1 + max_loc[0] + tpl_w // 2
+                    center_y = y1 + max_loc[1] + tpl_h // 2
+                    self.logger.log(f"Найден шаблон сундука (score={max_val:.2f}) по центру ({center_x},{center_y})")
+                    pyautogui.moveTo(center_x, center_y)
+                    for n in range(3):
+                        send_click_human()
+                        self.logger.log(self.strings["log_click_n"].format(n=n + 1))
+                        time.sleep(1)
+                    return True
+                # если не найден — продолжаем к следующему шаблону
+
+            # ни по одному шаблону не попали
+            self.logger.log(self.strings["log_grayscale_not_found"].format(score=max_val if 'max_val' in locals() else 0.0))
             return False
         except Exception as e:
             self.logger.log(self.strings["log_error"].format(e))
