@@ -2,7 +2,7 @@
 
 ---
 
-Мое лобби CfdKamk1a3  |  My lobby CfdKamk1a3
+Мое лобби CfdKbsKv7b  |  My lobby CfdKamk1a3
 
 ---
 
